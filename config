@@ -27,12 +27,10 @@ NFQWS_OPT="
 --new --filter-tcp=443 
 --dpi-desync=multidisorder --dpi-desync-split-pos=1,sniext+1,host+1,midsld-2,midsld,midsld+2,endhost-1 --dpi-desync-ttl=3 --dpi-desync-fooling=md5sig,badsum,badseq 
 --dpi-desync-fake-tls=/opt/zapret/files/fake/tls_clienthello_vk_com.bin --wssize 1:6 --hostlist=/opt/zapret/ipset/zapret-hosts-user.txt  --hostlist-exclude=/opt/zapret/ipset/zapret-hosts-user-exclude.txt
- 
 
 --new --filter-udp=443 
 --dpi-desync=multidisorder --dpi-desync-repeats=11 
 --dpi-desync-fake-quic="/opt/zapret/files/fake/quic_initial_vk_com.bin" --hostlist=/opt/zapret/ipset/zapret-hosts-user.txt --hostlist-exclude=/opt/zapret/ipset/zapret-hosts-user-exclude.txt
-
 
 --new --filter-udp=50000-65535 
 --dpi-desync=multidisorder --dpi-desync-repeats=6 --dpi-desync-any-protocol --dpi-desync-cutoff=n4 
@@ -43,4 +41,4 @@ FLOWOFFLOAD=donttouch
 INIT_APPLY_FW=1
 DISABLE_IPV6=1
 FILTER_TTL_EXPIRED_ICMP=1
-#GETLIST=get_reestr_hostlist.sh
+
