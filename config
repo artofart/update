@@ -1,0 +1,46 @@
+FWTYPE=nftables
+SET_MAXELEM=522288
+IPSET_OPT="hashsize 262144 maxelem $SET_MAXELEM"
+IP2NET_OPT4="--prefix-length=22-30 --v4-threshold=3/4"
+IP2NET_OPT6="--prefix-length=56-64 --v6-threshold=5"
+AUTOHOSTLIST_RETRANS_THRESHOLD=3
+AUTOHOSTLIST_FAIL_THRESHOLD=3
+AUTOHOSTLIST_FAIL_TIME=60
+AUTOHOSTLIST_DEBUGLOG=0
+MDIG_THREADS=30
+GZIP_LISTS=1
+DESYNC_MARK=0x40000000
+DESYNC_MARK_POSTNAT=0x20000000
+TPWS_SOCKS_ENABLE=0
+TPWS_ENABLE=0
+NFQWS_ENABLE=1
+NFQWS_PORTS_TCP=80,443
+NFQWS_PORTS_UDP=443
+NFQWS_TCP_PKT_OUT=$((6+$AUTOHOSTLIST_RETRANS_THRESHOLD))
+NFQWS_TCP_PKT_IN=3
+NFQWS_UDP_PKT_OUT=$((6+$AUTOHOSTLIST_RETRANS_THRESHOLD))
+NFQWS_UDP_PKT_IN=0
+NFQWS_OPT="
+--filter-tcp=80 --dpi-desync=multisplit --dpi-desync-ttl=0 --dpi-desync-fooling=md5sig,badsum 
+--dpi-desync-fake-http=/opt/zapret/files/fake/http_iana_org.bin
+
+--new --filter-tcp=443 
+--dpi-desync=multidisorder --dpi-desync-split-pos=1,sniext+1,host+1,midsld-2,midsld,midsld+2,endhost-1 --dpi-desync-ttl=3 --dpi-desync-fooling=md5sig,badsum,badseq 
+--dpi-desync-fake-tls=/opt/zapret/files/fake/tls_clienthello_vk_com.bin --wssize 1:6 --hostlist=/opt/zapret/ipset/zapret-hosts-user.txt  --hostlist-exclude=/opt/zapret/ipset/zapret-hosts-user-exclude.txt
+ 
+
+--new --filter-udp=443 
+--dpi-desync=multidisorder --dpi-desync-repeats=11 
+--dpi-desync-fake-quic="/opt/zapret/files/fake/quic_initial_vk_com.bin" --hostlist=/opt/zapret/ipset/zapret-hosts-user.txt --hostlist-exclude=/opt/zapret/ipset/zapret-hosts-user-exclude.txt
+
+
+--new --filter-udp=50000-65535 
+--dpi-desync=multidisorder --dpi-desync-repeats=6 --dpi-desync-any-protocol --dpi-desync-cutoff=n4 
+"
+
+MODE_FILTER=hostlist
+FLOWOFFLOAD=donttouch
+INIT_APPLY_FW=1
+DISABLE_IPV6=1
+FILTER_TTL_EXPIRED_ICMP=1
+#GETLIST=get_reestr_hostlist.sh
